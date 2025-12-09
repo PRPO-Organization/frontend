@@ -1,0 +1,38 @@
+<div class="container min-vh-100 d-flex align-items-center">
+    <div class="mx-auto bg-body-tertiary text-body rounded-4 p-4 shadow" style="max-width: 420px;">
+        <h1 class="text-center mb-4">Login</h1>
+
+        <form class="bg-body-tertiary text-body rounded-4 p-4 shadow" (ngSubmit)="onLogin()">
+          <!-- Email -->
+          <div class="form-floating mb-3">
+              <input [(ngModel)]="email" name="email" type="email" class="form-control" id="email" placeholder="" required/>
+              <label for="email">Email address</label>
+          </div>
+
+          <!-- Password -->
+          <div class="form-floating mb-4">
+              <input [(ngModel)]="password" name="password" type="password" class="form-control" id="password" placeholder="" required/>
+              <label for="password">Password</label>
+          </div>
+
+          <!-- Submit -->
+          <!-- <a href="/docs/views/main.html" class="btn btn-primary w-100 mb-3">Login</a> -->
+          <button type="submit" [disabled]="loading" class="btn btn-outline-primary btn-sm">Login</button>            
+        </form>
+        <br *ngIf="error"/>
+        <p *ngIf="error" style="color:red;">{{ error }}</p>   <!-- Display error message if login fails (ngIf)-->
+
+        <!-- Login -->
+        <br/>
+        <div>
+            Not a member?
+            <!-- <a href="/docs/views/register.html">Register</a> -->
+            <button (click)="onRegister()" type="submit" [disabled]="loading" class="buttonAlt">Register</button>
+        </div>
+        <div>
+            Admin?
+            <!-- <a href="/docs/views/admin.html">Login as admin</a> -->
+            <button type="submit" [disabled]="loading" class="buttonAlt">Login As Admin</button>
+        </div>
+    </div>
+</div>

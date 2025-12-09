@@ -1,0 +1,50 @@
+<div class="container min-vh-100 d-flex align-items-center">
+    <div class="mx-auto bg-body-tertiary text-body rounded-4 p-4 shadow" style="max-width: 420px;">
+        <h1 class="text-center mb-4">Register</h1>
+
+        <form #registerForm="ngForm" class="bg-body-tertiary text-body rounded-4 p-4 shadow" (ngSubmit)="onRegister()">
+          <!-- Email -->
+          <div class="form-floating mb-3">
+              <input [(ngModel)]="email" name="email" type="email" class="form-control" id="email" placeholder="" required/>
+              <label for="email">Email address</label>
+          </div>
+
+          <!-- First name -->
+          <div class="form-floating mb-3">
+              <input [(ngModel)]="firstName" name="firstName" type="firstName" class="form-control" id="firstName" placeholder="John" required/>
+              <label for="email">First name</label>
+          </div>
+
+          <!-- Last name -->
+          <div class="form-floating mb-3">
+              <input [(ngModel)]="lastName" name="lastName" type="lastName" class="form-control" id="lastName" placeholder="Doe" required/>
+              <label for="email">Last name</label>
+          </div>
+
+          <!-- Password -->
+          <div class="form-floating mb-4">
+              <input [(ngModel)]="password" name="password" type="password" class="form-control" id="password" placeholder="" required/>
+              <label for="password">Password</label>
+          </div>
+
+          <!-- Confirm password -->
+          <div class="form-floating mb-4">
+              <input [(ngModel)]="passwordC" name="passwordC" type="password" class="form-control" id="password" placeholder="" required/>
+              <label for="password">Confirm password</label>
+          </div>
+
+          <!-- Address -->
+          <div class="form-floating mb-3">
+              <input [(ngModel)]="address" name="address" type="address" class="form-control" id="address" placeholder="" required/>
+              <label for="email">Residence address</label>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" [disabled]="registerForm.invalid || loading" class="btn btn-outline-primary btn-sm">
+            Register
+          </button>         
+        </form>
+        <br *ngIf="error"/>
+        <p *ngIf="error" style="color:red;">{{ error }}</p>   <!-- Display error message if register fails (ngIf)-->
+    </div>
+</div>
