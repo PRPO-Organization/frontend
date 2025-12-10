@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+  <a class="navbar-brand" routerLink="/">Placeholder</a>
+
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ms-auto">
+
+      <!-- Shown when NOT logged in -->
+      <li class="nav-item" *ngIf="!(loggedIn$ | async)">
+        <a class="nav-link" routerLink="/login">Login</a>
+      </li>
+      <li class="nav-item" *ngIf="!(loggedIn$ | async)">
+        <a class="nav-link" routerLink="/register">Register</a>
+        <!--<button class="nav-link" (click)="toRegister()">Register</button>-->
+      </li>
+
+      <!-- Shown when logged in -->
+      <li class="nav-item" *ngIf="loggedIn$ | async">
+        <a class="nav-link" routerLink="/profile">Profile</a>
+      </li>
+
+      <li class="nav-item" *ngIf="loggedIn$ | async">
+        <button class="nav-link" (click)="logout()">Logout</button>
+      </li>
+
+    </ul>
+  </div>
+</nav>

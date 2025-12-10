@@ -1,1 +1,120 @@
-<p>dashboard works!</p>
+<div class="container py-5">
+
+  <!-- USER NOT LOGGED IN -->
+  <div *ngIf="!(loggedIn$ | async)" class="text-center">
+
+    <h1 class="mb-4 fw-bold">Welcome to QuickRide</h1>
+    <p class="lead mb-4 text-muted">
+      Your reliable and fast private transport service.
+    </p>
+
+    <a routerLink="/login" class="btn btn-primary btn-lg me-2">Login</a>
+    <a routerLink="/register" class="btn btn-outline-primary btn-lg">Create Account</a>
+
+    <hr class="my-5">
+
+    <h3 class="fw-semibold">What We Offer</h3>
+    <p class="text-muted">Book rides instantly, track drivers, and enjoy comfortable travel.</p>
+
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title">Instant Booking</h5>
+            <p class="card-text">Request a ride within seconds from anywhere in your city.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title">Professional Drivers</h5>
+            <p class="card-text">Licensed, verified, and trained for your safety.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body text-center">
+            <h5 class="card-title">Fixed Pricing</h5>
+            <p class="card-text">Transparent fares — no surprises at the end of your trip.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USER LOGGED IN -->
+  <div *ngIf="loggedIn$ | async">
+
+    <h1 class="fw-bold mb-4">Welcome Back, {{ firstName }}!</h1>
+    <p class="lead mb-4 text-muted">Ready to book your next ride?</p>
+
+    <div class="row">
+      <!-- Book Ride -->
+      <div class="col-md-4 mb-3">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">Book a Ride</h5>
+            <p class="card-text">Choose destination, pickup point, and vehicle type.</p>
+            <a routerLink="/book" class="btn btn-primary">Book Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Rides -->
+      <div class="col-md-4 mb-3">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">My Rides</h5>
+            <p class="card-text">View your ride history and upcoming reservations.</p>
+            <a routerLink="/rides" class="btn btn-outline-primary">View Rides</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile -->
+      <div class="col-md-4 mb-3">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">Profile</h5>
+            <p class="card-text">Update your personal information and preferences.</p>
+            <a routerLink="/profile" class="btn btn-outline-secondary">Manage Profile</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="my-5">
+
+    <h3 class="fw-semibold">Recommended for You</h3>
+
+    <p class="text-muted">Based on your travel habits</p>
+
+    <div class="row mt-3">
+      <div class="col-md-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">QuickRide Premium</h5>
+            <p class="card-text">Upgrade for priority pickups and luxury vehicles.</p>
+            <button class="btn btn-dark">Learn More</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Ride Pass</h5>
+            <p class="card-text">Save up to 30% on your regular routes.</p>
+            <button class="btn btn-dark">View Plans</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

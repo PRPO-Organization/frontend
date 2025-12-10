@@ -24,7 +24,8 @@ export class Login {
       next: (res) => {
         console.log('Login successful', res);
         this.loading = false;
-        this.auth.setToken(res.token);  
+        this.auth.setToken(res.token);
+        this.auth.setLoggedIn();
         this.router.navigate(['/dashboard']); 
       },
       error: (err) => {
