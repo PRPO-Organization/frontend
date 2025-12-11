@@ -9,7 +9,8 @@ export interface Notification{
   recipient: string,
   subject: string,
   body: string,
-  read: boolean
+  read: boolean,
+  createdAt: Date
 }
 
 @Injectable({
@@ -21,9 +22,9 @@ export class Notifications {
 
   constructor(private http: HttpClient, private auth: Auth) {}
 
-  getAccountNotifications() {
+  getUnreadAccountNotifications() {
     const headers = this.auth.getAuthHeaders();
-    this.http.get<Notification[]>(`${environment.NOTIFS_URL}/notifications/me`, { headers }).subscribe({
+    this.http.get<Notification[]>(`${environment.NOTIFS_URL}/notifications/me/unread`, { headers }).subscribe({
       next: (notifs) => {
         console.log(notifs)
         this.notificationsSubject.next(notifs);
@@ -34,8 +35,39 @@ export class Notifications {
     });
   }
 
+  getAllNotifications(): Observable<Notification[]>{
+    const headers = this.auth.getAuthHeaders();
+    return this.http.get<Notification[]>(`${environment.NOTIFS_URL}/notifications/me`, { headers });
+  }
+
+  markAsRead() {
+    const headers = this.auth.getAuthHeaders();
+    console.log({ headers });
+    this.http.put<any>(`${environment.NOTIFS_URL}/notifications/me`, null, { headers }).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (err) => {
+        console.error("Error marking notifications as read", err);
+      }
+    })
+  }
+
+  clearNotifications(){
+    this.notificationsSubject.next([]);
+  }
+
+  /*
   addNotification(n: Notification) {
     const updated = [n, ...this.notificationsSubject.value];
+    this.notificationsSubject.next(updated);
+    console.log(n);
+  }
+  */
+
+  addNotification(n: Notification) {
+    const current = Array.isArray(this.notificationsSubject.value) ? this.notificationsSubject.value : [];
+    const updated = [n, ...current];
     this.notificationsSubject.next(updated);
     console.log(n);
   }
@@ -47,6 +79,7 @@ export class Notifications {
     eventSource.addEventListener("notification", (event: any) => {
     console.log("SSE notification event:", event);
     try {
+      console.log(event.data)
       const data = JSON.parse(event.data);
       this.addNotification(data);
     } catch (e) {

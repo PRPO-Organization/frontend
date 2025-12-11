@@ -23,7 +23,7 @@
       </li>
 
       <!-- Notification dropdown (only when logged in) -->
-      <li class="nav-item dropdown" *ngIf="loggedIn$ | async">
+      <li class="nav-item dropdown" *ngIf="loggedIn$ | async" (click)="markAsRead()">
         <a
           class="nav-link position-relative dropdown-toggle"
           href="#"
@@ -35,16 +35,16 @@
           <i class="bi bi-bell"></i>
 
           <!-- badge for unread notifications -->
-          <span *ngIf="notifications.length > 0"
+          <span *ngIf="((notifications$ | async)?.length || 0) > 0"
                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {{ notifications.length }}
+            {{ (notifications$ | async)?.length }}
           </span>
         </a>
 
         <ul class="dropdown-menu dropdown-menu-end p-2" style="width: 300px;" aria-labelledby="notifDropdown">
 
           <!-- No notifications -->
-          <li *ngIf="notifications.length === 0" class="text-center text-muted p-2">
+          <li *ngIf="(notifications$ | async)?.length === 0" class="text-center text-muted p-2">
             No notifications
           </li>
 
@@ -56,8 +56,9 @@
             </div>
           </li>
 
-          <div class="d-grid gap-2">
-            <button class="btn btn-outline-primary btn-sm">Notification history</button>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm" (click)="toNotificationHistory()">Notification history</button>
+            <button class="btn btn-outline-primary btn-sm" (click)="clearNotifications()">Clear notifications</button>
           </div>
 
         </ul>

@@ -36,7 +36,7 @@ export class Login {
       },
       complete: () => { 
         this.loading = false; 
-        this.notifs.getAccountNotifications();
+        this.notifs.getUnreadAccountNotifications();
         this.notifs.startSse();
       }
     });

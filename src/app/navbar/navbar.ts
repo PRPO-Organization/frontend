@@ -52,4 +52,16 @@ export class Navbar implements OnInit {
   toRegister(){
     this.router.navigate(['/register']);
   }
+
+  markAsRead(){
+    this.notifs.markAsRead();
+  }
+
+  clearNotifications(){
+    this.notifs.clearNotifications();
+  }
+
+  toNotificationHistory(){
+    this.router.navigate(['/notifications-history']);
+  }
 }

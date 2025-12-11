@@ -19,9 +19,7 @@ export class App implements OnInit{
     const token = this.auth.getToken();
     if(token){
       this.notifs.startSse();
-      this.notifs.getAccountNotifications();
+      this.notifs.getUnreadAccountNotifications();
     }
   }
-
-    
 }
