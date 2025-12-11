@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Auth } from '../services/auth';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from "@angular/router";
+import { Notifications } from '../services/notifications';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -12,12 +14,34 @@ import { Router, RouterLink } from "@angular/router";
 })
 export class Navbar implements OnInit {
 
-  constructor(private auth: Auth, private router: Router) {}
-
   loggedIn$: any;
+  email: string = '';
+  notifications: any[] = [];
+  notifications$: Observable<any[]>;
+
+  constructor(private auth: Auth, private router: Router, private notifs: Notifications) {
+    this.notifications$ = this.notifs.notifications$;
+  }
 
   ngOnInit(): void {
     this.loggedIn$ = this.auth.loggedIn$;
+
+    this.auth.verifySelf().subscribe({
+      next: (response) => {
+        console.log(response);
+        this.email = response.email;
+
+        this.getNotifications();
+      }
+    });
+  }
+
+  getNotifications(){
+    this.notifs.getAccountNotifications();
+
+    this.notifs.notifications$.subscribe(nList => {
+      this.notifications = nList;
+    })
   }
 
   logout() {

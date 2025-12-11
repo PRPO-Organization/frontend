@@ -22,6 +22,47 @@
         <button class="nav-link" (click)="logout()">Logout</button>
       </li>
 
+      <!-- Notification dropdown (only when logged in) -->
+      <li class="nav-item dropdown" *ngIf="loggedIn$ | async">
+        <a
+          class="nav-link position-relative dropdown-toggle"
+          href="#"
+          id="notifDropdown"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <i class="bi bi-bell"></i>
+
+          <!-- badge for unread notifications -->
+          <span *ngIf="notifications.length > 0"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ notifications.length }}
+          </span>
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end p-2" style="width: 300px;" aria-labelledby="notifDropdown">
+
+          <!-- No notifications -->
+          <li *ngIf="notifications.length === 0" class="text-center text-muted p-2">
+            No notifications
+          </li>
+
+          <!-- Notifications list -->
+          <li *ngFor="let n of notifications" class="mb-1">
+            <div class="p-2 bg-light rounded">
+              <strong>{{ n.subject }}</strong><br>
+              <small class="text-muted">{{ n.body }}</small>
+            </div>
+          </li>
+
+          <div class="d-grid gap-2">
+            <button class="btn btn-outline-primary btn-sm">Notification history</button>
+          </div>
+
+        </ul>
+      </li>
+
     </ul>
   </div>
 </nav>

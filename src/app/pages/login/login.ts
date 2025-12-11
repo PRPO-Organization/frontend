@@ -3,6 +3,7 @@ import { Auth } from '../../services/auth';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'
+import { Notifications } from '../../services/notifications';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class Login {
   error = '';
   loading: boolean = false;
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: Auth, private router: Router, private notifs: Notifications) {}
 
   onLogin() {
     this.loading = true;
@@ -33,7 +34,11 @@ export class Login {
         this.loading = false;
         this.error = 'Login failed';
       },
-      complete: () => { this.loading = false; }
+      complete: () => { 
+        this.loading = false; 
+        this.notifs.getAccountNotifications();
+        this.notifs.startSse();
+      }
     });
   }
 

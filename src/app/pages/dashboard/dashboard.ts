@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { CommonModule } from '@angular/common';
+import { Notifications } from '../../services/notifications';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,8 +14,9 @@ export class Dashboard implements OnInit{
   lastName: string = '';
   email: string = '';
   role: string = '';
+  notifications: Object[] = [];
 
-  constructor(private auth: Auth) {}
+  constructor(private auth: Auth, private notifs: Notifications) {}
   
   loggedIn$: any;
 
@@ -27,7 +29,10 @@ export class Dashboard implements OnInit{
         this.firstName = response.firstName;
         this.lastName = response.lastName;
         this.role = response.role;
+        this.email = response.email;
+
+        //this.getNotifications();
       }
-    })
+    });
   }
 }
