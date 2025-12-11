@@ -49,7 +49,7 @@
           </li>
 
           <!-- Notifications list -->
-          <li *ngFor="let n of notifications" class="mb-1">
+          <li *ngFor="let n of (notifications$ | async)" class="mb-1">
             <div class="p-2 bg-light rounded">
               <strong>{{ n.subject }}</strong><br>
               <small class="text-muted">{{ n.body }}</small>

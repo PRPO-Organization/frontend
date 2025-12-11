@@ -37,7 +37,7 @@ export class Navbar implements OnInit {
   }
 
   getNotifications(){
-    this.notifs.getAccountNotifications();
+    //this.notifs.getAccountNotifications();
 
     this.notifs.notifications$.subscribe(nList => {
       this.notifications = nList;

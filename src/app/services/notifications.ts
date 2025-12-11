@@ -44,6 +44,16 @@ export class Notifications {
     const token = this.auth.getToken();
     const eventSource = new EventSource(`${environment.NOTIFS_URL}/notifications/stream?token=${token}`);
 
+    eventSource.addEventListener("notification", (event: any) => {
+    console.log("SSE notification event:", event);
+    try {
+      const data = JSON.parse(event.data);
+      this.addNotification(data);
+    } catch (e) {
+      console.error("Failed to parse SSE event", e);
+    }
+  });
+
     eventSource.onmessage = (event) => {
       console.log(event);
       const data = JSON.parse(event.data);
