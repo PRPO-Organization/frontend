@@ -1,0 +1,189 @@
+<div class="container my-5">
+
+    @if(loading){
+    <div class="text-center my-5">
+        <div class="spinner-border text-primary"></div>
+    </div>
+    }
+
+    <!-- Profile content -->
+    @if(!loading){
+    <div>
+
+        <!-- Header -->
+        <div class="d-flex align-items-center mb-4">
+        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+            style="width: 72px; height: 72px; font-size: 28px;">
+            {{ firstName }}{{ lastName }}
+        </div>
+
+        <div class="ms-3">
+            <h3 class="mb-0">{{ firstName }} {{ lastName }}</h3>
+            <small class="text-muted">{{ email }}</small>
+        </div>
+        </div>
+
+        <div class="row g-4">
+
+        <!-- Account Information -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Account Information</div>
+            <div class="card-body">
+
+                <div class="mb-2">
+                <strong>Email:</strong>
+                <span class="ms-2">{{ email }}</span>
+                </div>
+
+                <div class="mb-2">
+                <strong>Role:</strong>
+                <span class="badge bg-secondary ms-2">
+                    {{ role }}
+                </span>
+                </div>
+
+                <div class="mb-2">
+                <strong>Address:</strong>
+                <span class="badge bg-secondary ms-2">
+                    {{ address }}
+                </span>
+                </div>
+
+                <div class="mb-2">
+                <strong>Member since:</strong>
+                <span class="ms-2">{{ createdAt | date:'longDate' }}</span>
+                </div>
+
+            </div>
+            </div>
+        </div>
+
+        <!-- Ride Statistics -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Ride Statistics</div>
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between mb-2">
+                <span>Total trips</span>
+                <strong>{{ totalTrips }}</strong>
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                <span>Completed</span>
+                <strong class="text-success">{{ completedTrips }}</strong>
+                </div>
+
+            </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Account Actions</div>
+            <div class="card-body d-grid gap-2">
+
+                <button class="btn btn-outline-primary" (click)="openEditProfile()">
+                Edit Profile
+                </button>
+
+                <button class="btn btn-outline-secondary">
+                Change Password
+                </button>
+
+                <button class="btn btn-outline-danger">
+                Delete Account
+                </button>
+
+            </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+    }
+
+</div>
+
+
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form #editForm="ngForm">
+
+          <!-- First name -->
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              name="firstName"
+              [(ngModel)]="editProfile.firstName"
+              required
+            />
+            <label for="firstName">First name</label>
+          </div>
+
+          <!-- Last name -->
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              [(ngModel)]="editProfile.lastName"
+              required
+            />
+            <label for="lastName">Last name</label>
+          </div>
+
+          <!-- Address -->
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="address"
+              name="address"
+              [(ngModel)]="editProfile.address"
+              required
+            />
+            <label for="address">Address</label>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="saving"
+          (click)="saveProfile()"
+        >
+          Save changes
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+

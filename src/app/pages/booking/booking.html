@@ -1,0 +1,81 @@
+<div class="container my-4">
+  <h2>Booking Confirmation</h2>
+
+  @if(!destination){
+  <div class="alert alert-warning">
+    Please select a destination on the map first.
+  </div>
+  }@else{
+  <div *ngIf="destination">
+    <p><strong>Selected Destination:</strong></p>
+    <ul>
+      <li>Latitude: {{ destination.lat }}</li>
+      <li>Longitude: {{ destination.lng }}</li>
+    </ul>
+  </div>
+  }
+</div>
+
+<div class="container mt-4">
+
+  <h2 class="mb-4">Select a Driver</h2>
+
+  <!-- Loading -->
+  @if(loadingDrivers){
+  <div class="text-center">
+    <div class="spinner-border"></div>
+  </div>
+  }
+
+  <!-- Driver table -->
+  @if(!loadingDrivers && drivers.length){
+  <table class="table table-hover align-middle">
+
+    <thead class="table-dark">
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Vehicle</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let d of drivers"
+          (click)="selectDriver(d)"
+          [class.table-primary]="selectedDriver?.id === d.id"
+          style="cursor: pointer">
+
+        <td>
+          <input type="radio"
+                 name="driver"
+                 [checked]="selectedDriver?.id === d.id"
+                 (click)="$event.stopPropagation(); selectDriver(d)" />
+        </td>
+
+        <td>{{ d.firstName }} {{ d.lastName }}</td>
+        <td>{{ d.vehicle }}</td>
+        <td>⭐ {{ d.rating }}</td>
+      </tr>
+    </tbody>
+  </table>
+  }
+
+  <!-- No drivers -->
+  @if(!loadingDrivers && drivers.length === 0){
+  <div class="text-muted text-center">
+    No drivers available
+  </div>
+  }
+
+  <!-- Confirm button -->
+  <div class="d-flex justify-content-end mt-4">
+    <button class="btn btn-primary"
+            [disabled]="!selectedDriver"
+            (click)="confirmBooking()">
+      Confirm Booking
+    </button>
+  </div>
+
+</div>
+

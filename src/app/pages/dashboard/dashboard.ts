@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { CommonModule } from '@angular/common';
 import { Notifications } from '../../services/notifications';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +17,7 @@ export class Dashboard implements OnInit{
   role: string = '';
   notifications: Object[] = [];
 
-  constructor(private auth: Auth, private notifs: Notifications) {}
+  constructor(private auth: Auth, private notifs: Notifications, private router: Router) {}
   
   loggedIn$: any;
 
@@ -34,5 +35,13 @@ export class Dashboard implements OnInit{
         //this.getNotifications();
       }
     });
+  }
+
+  toBooking(){
+    this.router.navigate(['/map']);
+  }
+
+  toProfile(){
+    this.router.navigate(['/profile']);
   }
 }

@@ -59,7 +59,7 @@
           <div class="card-body">
             <h5 class="card-title">Book a Ride</h5>
             <p class="card-text">Choose destination, pickup point, and vehicle type.</p>
-            <a routerLink="/book" class="btn btn-primary">Book Now</a>
+            <button class="btn btn-primary" (click)="toBooking()">Book Now</button>
           </div>
         </div>
       </div>
@@ -81,7 +81,7 @@
           <div class="card-body">
             <h5 class="card-title">Profile</h5>
             <p class="card-text">Update your personal information and preferences.</p>
-            <a routerLink="/profile" class="btn btn-outline-secondary">Manage Profile</a>
+            <button class="btn btn-outline-secondary" (click)="toProfile()">Manage Profile</button>
           </div>
         </div>
       </div>

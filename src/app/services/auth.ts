@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface User {
   id: number;
@@ -63,5 +63,10 @@ export class Auth {
 
   setLoggedIn() {
     this.loggedIn.next(true);
+  }
+
+  updateSelf(body: any): Observable<string>{
+    const headers = this.getAuthHeaders();
+    return this.http.put<string>(`${environment.USERS_URL}/users/me`, body, { headers });
   }
 }
