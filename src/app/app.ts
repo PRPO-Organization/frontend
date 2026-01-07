@@ -6,7 +6,7 @@ import { Notifications } from './services/notifications';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar],
+  imports: [RouterOutlet , Navbar],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
