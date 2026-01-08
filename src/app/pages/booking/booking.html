@@ -55,7 +55,7 @@
 
         <td>{{ d.firstName }} {{ d.lastName }}</td>
         <td>{{ d.vehicle }}</td>
-        <td>⭐ {{ d.rating }}</td>
+        <td>⭐ {{ d.ratings | number : '1.1-1' }}</td>
       </tr>
     </tbody>
   </table>

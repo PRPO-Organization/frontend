@@ -4,6 +4,7 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Destination, RideBooking } from '../../services/ride-booking';
+import { Ratings } from '../../services/ratings';
 
 @Component({
   selector: 'app-booking',
@@ -25,7 +26,8 @@ export class Booking {
     private router: Router,
     private route: ActivatedRoute,
     private booking: RideBooking,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private ratings: Ratings
   ) {}
 
   ngOnInit(): void {
@@ -45,6 +47,7 @@ export class Booking {
         console.log(this.drivers);
         this.loadingDrivers = false;
         this.cdr.detectChanges();
+        this.calculateRating();
       },
       error: (err) => {
         console.error(err);
@@ -62,7 +65,6 @@ export class Booking {
 
     this.auth.verifySelf().subscribe({
       next: (response) => {
-        console.log(response);
         this.userId  = response.id;
       }
     });
@@ -72,5 +74,17 @@ export class Booking {
 
   selectDriver(driver: any) {
     this.selectedDriver = driver;
+  }
+
+  calculateRating(){
+    this.drivers.forEach(d => {
+      this.ratings.getDriverAverageRating(d.id).subscribe({
+        next: (response) => {
+          d.ratings = response;
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error(err)
+      });
+    });
   }
 }
