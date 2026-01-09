@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'
 import { Notifications } from '../../services/notifications';
+import { LocationTracking } from '../../services/location-tracking';
 
 @Component({
   selector: 'app-login',
@@ -16,8 +17,10 @@ export class Login {
   password = '';
   error = '';
   loading: boolean = false;
+  userId: number = -1;
+  userRole: string = '';
 
-  constructor(private auth: Auth, private router: Router, private notifs: Notifications) {}
+  constructor(private auth: Auth, private router: Router, private notifs: Notifications, private tracking: LocationTracking) {}
 
   onLogin() {
     this.loading = true;
@@ -27,6 +30,7 @@ export class Login {
         this.loading = false;
         this.auth.setToken(res.token);
         this.auth.setLoggedIn();
+        this.enableTracking();
         this.router.navigate(['/dashboard']); 
       },
       error: (err) => {
@@ -44,5 +48,15 @@ export class Login {
 
   onRegister() {
     this.router.navigate(['/register']);
+  }
+
+  enableTracking(){
+    this.auth.verifySelf().subscribe({
+      next: (response) => {
+        this.userId = response.id;
+        this.userRole = response.role;
+        this.tracking.startTracking(this.userId, this.userRole);
+      }
+    });
   }
 }

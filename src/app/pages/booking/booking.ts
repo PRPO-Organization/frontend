@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Destination, RideBooking } from '../../services/ride-booking';
 import { Ratings } from '../../services/ratings';
+import { LocationTracking } from '../../services/location-tracking';
 
 @Component({
   selector: 'app-booking',
@@ -18,6 +19,7 @@ export class Booking {
 
   private userId: number = -1;
   drivers: any[] = [];
+  locationList: any[] = [];
   selectedDriver: any = null;
   loadingDrivers: boolean = false;
 
@@ -27,10 +29,11 @@ export class Booking {
     private route: ActivatedRoute,
     private booking: RideBooking,
     private cdr: ChangeDetectorRef,
-    private ratings: Ratings
+    private ratings: Ratings,
+    private tracking: LocationTracking
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.route.queryParams.subscribe(params => {
       if (params['lat'] && params['lng']) {
         this.destination = {
@@ -40,14 +43,18 @@ export class Booking {
       }
     });
 
+    if(!this.destination?.lat && !this.destination?.lng)
+      return;
+
     this.loadingDrivers = true;
     this.booking.getDrivers().subscribe({
-      next: (response) => {
+      next: async (response) => {
         this.drivers = response;
         console.log(this.drivers);
+        await this.calculateRating();
+        this.getNearestDrivers(this.destination?.lat!, this.destination?.lng!, 5);
         this.loadingDrivers = false;
         this.cdr.detectChanges();
-        this.calculateRating();
       },
       error: (err) => {
         console.error(err);
@@ -76,7 +83,7 @@ export class Booking {
     this.selectedDriver = driver;
   }
 
-  calculateRating(){
+  async calculateRating(){
     this.drivers.forEach(d => {
       this.ratings.getDriverAverageRating(d.id).subscribe({
         next: (response) => {
@@ -86,5 +93,66 @@ export class Booking {
         error: (err) => console.error(err)
       });
     });
+  }
+
+  async getNearestDrivers(lat: number, lng: number, driverCount: number){
+    this.tracking.getNearestDrivers(lat, lng, driverCount).subscribe({
+      next: (response) =>{
+        this.locationList = response;
+        console.log("nearest driver ids:", response);
+        this.matchDriverIdToUser();
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  matchDriverIdToUser(){
+    const locationMap = new Map(
+      this.locationList.map(l => [l.id, l])
+    );
+
+    const driversWithLocation = this.drivers.map(driver => {
+      const location = locationMap.get(driver.id);
+
+      return {
+        ...driver,
+        lat: location?.lat ?? null,
+        lng: location?.lng ?? null
+      };
+    });
+
+    const driversWithDistance = driversWithLocation.map(d => ({
+      ...d,
+      distanceKm: this.getDistanceKm(d.lat, d.lng, this.destination?.lat!, this.destination?.lng!)
+    }));
+
+    this.drivers = driversWithDistance;
+    this.cdr.detectChanges();
+  }
+
+  private toRad(value: number): number {
+    return value * Math.PI / 180;
+  }
+
+  getDistanceKm(
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number
+  ): number {
+    const R = 6371; // Earth radius in km
+
+    const dLat = this.toRad(lat2 - lat1);
+    const dLng = this.toRad(lng2 - lng1);
+
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(this.toRad(lat1)) *
+      Math.cos(this.toRad(lat2)) *
+      Math.sin(dLng / 2) ** 2;
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
   }
 }

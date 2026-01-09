@@ -39,6 +39,17 @@
               <label for="email">Residence address</label>
           </div>
 
+          <div class="form-check mb-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="isDriver"
+              name="isDriver"
+              [(ngModel)]="isDriver"
+            />
+            <label class="form-check-label" for="isDriver">Register as driver</label>
+          </div>
+
           <!-- Submit -->
           <button type="submit" [disabled]="registerForm.invalid || loading" class="btn btn-outline-primary btn-sm">
             Register

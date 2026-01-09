@@ -19,6 +19,7 @@ export class Register {
   passwordC: string = '';
   error: string = '';
   success: string = '';
+  isDriver: boolean = false;
   loading: boolean = false;
 
   constructor(private auth: Auth, private router: Router) {}
@@ -29,9 +30,13 @@ export class Register {
       return;
     }
 
+    let userRole = 'CUSTOMER';
+    if(this.isDriver)
+      userRole = 'DRIVER';
+
     this.loading = true;
     this.auth.register({ firstName: this.firstName, lastName: this.lastName, address: this.address,
-      email: this.email, password: this.password }).subscribe({
+      email: this.email, password: this.password, role: userRole }).subscribe({
       next: (res) => {
         console.log('Registration successful', res);
         this.loading = false;

@@ -29,12 +29,16 @@ export class RideBooking {
     return this.destinationSubject.value;
   }
 
-  createBooking(userId: string, dest: Destination) {
+  //shit still doesn't fucking work
+  createBooking(passengerId: number, driverId: number, start: Destination, dest: Destination) {
     const headers = this.auth.getAuthHeaders();
-    return this.http.post(`${this.API_URL}/ride-request`, {
-      userId,
-      destination: dest,
-    }, { headers });
+    return this.http.post(`${this.API_URL}/requests?passengerId=${passengerId}&pickupLat=${start.lat}&pickupLng=${start.lng}&dropoffLat=${dest.lat}&dropoffLng=${dest.lng}`,
+    { headers });
+  }
+
+  //neither does this one
+  getBookingByDriverId(driverId: number): Observable<any[]>{
+    return this.http.get<any[]>(`${this.API_URL}/something-or-other`);
   }
 
   getDrivers(): Observable<any[]>{

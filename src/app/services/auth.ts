@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { LocationTracking } from './location-tracking';
 
 export interface User {
   id: number;
@@ -22,7 +23,7 @@ export class Auth {
 
   loggedIn$ = this.loggedIn.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private tracking: LocationTracking) {}
 
   register(data: any) {
     return this.http.post(`${environment.USERS_URL}/users/register`, data);
@@ -55,6 +56,7 @@ export class Auth {
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
     this.loggedIn.next(false);
+    this.tracking.stopTracking();
   }
 
   isLoggedIn(): boolean {
