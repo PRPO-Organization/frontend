@@ -1,0 +1,41 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main, test ]
+
+env:
+  ACR_LOGIN_SERVER: prporegistry.azurecr.io
+  IMAGE_NAME: frontend
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to ACR
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+
+      - name: Build and push Docker image (no cache)
+        run: |
+          docker build --no-cache -t ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest .
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+      - name: Update Kubernetes manifest
+        run: |
+          sed -i "s|image: prporegistry.azurecr.io/frontend:latest
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add k8s/deployment.yaml
+          git commit -m "Update image to ${{ github.sha }}" || exit 0
+          git push
+
