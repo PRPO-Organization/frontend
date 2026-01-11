@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [ main, test ]
+    branches: [ main,side]
 
 env:
   ACR_LOGIN_SERVER: prporegistry.azurecr.io
