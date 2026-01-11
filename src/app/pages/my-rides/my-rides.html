@@ -1,0 +1,40 @@
+<h2>My Rides</h2>
+
+@if(loadingRides){
+<div>Loading rides...</div>
+}
+
+<!-- passenger rides -->
+<h3>Passenger Requests</h3>
+
+<div *ngFor="let ride of passengerRides" class="ride-card">
+  <div>
+    <b>Status:</b> {{ ride.status }}
+  </div>
+  <div>
+    <b>Date:</b> {{ ride.createdAt | date:'short' }}
+  </div>
+</div>
+
+<!-- driver rides -->
+@if(role === 'DRIVER'){
+<div>
+  <h3>Driver Requests</h3>
+
+  <div *ngFor="let ride of driverRides" class="ride-card">
+    <div>
+      <b>Status:</b> {{ ride.status }}
+    </div>
+    <div>
+      <b>Date:</b> {{ ride.createdAt | date:'short' }}
+    </div>
+
+    @if(ride.status === 'NEW'){
+    <div class="actions">
+      <button (click)="acceptRide(ride.id)">ACCEPT</button>
+      <button (click)="declineRide(ride.id)">DECLINE</button>
+    </div>
+    }
+  </div>
+</div>
+}

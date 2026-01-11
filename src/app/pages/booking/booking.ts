@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { Destination, RideBooking } from '../../services/ride-booking';
 import { Ratings } from '../../services/ratings';
 import { LocationTracking } from '../../services/location-tracking';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-booking',
@@ -14,6 +15,11 @@ import { LocationTracking } from '../../services/location-tracking';
   styleUrl: './booking.scss'
 })
 export class Booking {
+  start: Destination | null = null;
+  showMapPicker = false;
+  map: any;
+  marker: any;
+
   destination: Destination | null = null;
   submitting: boolean = false;
 
@@ -46,6 +52,11 @@ export class Booking {
     if(!this.destination?.lat && !this.destination?.lng)
       return;
 
+    //this.loadDrivers();
+    this.getUserLocation();
+  }
+
+  loadDrivers(){
     this.loadingDrivers = true;
     this.booking.getDrivers().subscribe({
       next: async (response) => {
@@ -61,7 +72,7 @@ export class Booking {
         this.loadingDrivers = false;
         this.cdr.detectChanges();
       }
-    })
+    });
   }
 
   confirmBooking() {
@@ -73,10 +84,22 @@ export class Booking {
     this.auth.verifySelf().subscribe({
       next: (response) => {
         this.userId  = response.id;
+        this.confirmBooking2();
       }
     });
 
     //ADD DRIVE REQUEST THING HERE
+  }
+
+  private confirmBooking2(){
+    console.log("booking log 1",this.selectedDriver);
+    console.log("booking log 2",this.userId, this.selectedDriver.id, this.start!, this.destination!);
+    this.booking.createBooking(this.userId, this.selectedDriver.id, this.start!, this.destination!).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   selectDriver(driver: any) {
@@ -123,7 +146,7 @@ export class Booking {
 
     const driversWithDistance = driversWithLocation.map(d => ({
       ...d,
-      distanceKm: this.getDistanceKm(d.lat, d.lng, this.destination?.lat!, this.destination?.lng!)
+      distanceKm: this.getDistanceKm(d.lat, d.lng, this.start?.lat!, this.start?.lng!)
     }));
 
     this.drivers = driversWithDistance;
@@ -155,4 +178,71 @@ export class Booking {
 
     return R * c;
   }
+
+  getUserLocation(){
+    if(!navigator.geolocation){
+      this.openMapPicker();
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.start = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        console.log("User location:", this.start.lat, this.start.lng);
+
+        // Continue normal flow
+        this.loadDrivers();
+      },
+      (error) => {
+        console.warn("Geolocation failed:", error.message);
+        this.openMapPicker();
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000
+      }
+    );
+  }
+
+
+
+
+  // leaflet
+
+  openMapPicker() {
+    this.showMapPicker = true;
+
+    setTimeout(() => {
+      if (!this.map) {
+        this.map = L.map('map').setView([41.9981, 21.4254], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap'
+        }).addTo(this.map);
+
+        this.map.on('click', (e: any) => {
+          this.start = {
+            lat: e.latlng.lat,
+            lng: e.latlng.lng
+          };
+
+          if (this.marker) {
+            this.marker.setLatLng(e.latlng);
+          } else {
+            this.marker = L.marker(e.latlng).addTo(this.map);
+          }
+
+          console.log("Selected pickup:", this.start?.lat, this.start?.lng);
+
+          //this.showMapPicker = false;
+          this.loadDrivers();
+        });
+      }
+    }, 0);
+  }
+
 }

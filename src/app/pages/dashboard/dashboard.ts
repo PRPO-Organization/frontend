@@ -44,4 +44,8 @@ export class Dashboard implements OnInit{
   toProfile(){
     this.router.navigate(['/profile']);
   }
+
+  toMyRides(){
+    this.router.navigate(['/my-rides']);
+  }
 }

@@ -153,10 +153,5 @@ export class LeafletMapComponent implements AfterViewInit, OnDestroy {
     
     this.router.navigate(['/booking'], { queryParams: { lat: this.selectedDestination.lat, lng: this.selectedDestination.lng }});
 
-    
-    // Here you can:
-    // 1. Navigate to a booking page with this data
-    // 2. Send it to your backend via HTTP
-    // 3. Store it in a service for later retrieval
   }
 }

@@ -1,0 +1,99 @@
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Auth } from '../../services/auth';
+import { RideBooking } from '../../services/ride-booking';
+import { DatePipe } from '@angular/common';
+
+export interface Ride {
+  id: number;
+  passengerId: number;
+  driverId?: number;
+  pickupLat: number;
+  pickupLng: number;
+  dropoffLat: number;
+  dropoffLng: number;
+  status: 'NEW' | 'ACCEPTED' | 'DECLINED';
+  createdAt: string;
+}
+
+@Component({
+  selector: 'app-my-rides',
+  imports: [DatePipe],
+  templateUrl: './my-rides.html',
+  styleUrl: './my-rides.scss'
+})
+export class MyRides implements OnInit {
+  role: string = 'CUSTOMER';
+  id!: number;
+
+  passengerRides: any[] = [];
+  driverRides: any[] = [];
+
+  loadingRides = true;
+
+  constructor(private auth: Auth, private booking: RideBooking, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+    this.auth.verifySelf().subscribe(user => {
+      this.role = user.role;
+      this.id = user.id;
+      this.loadRides();
+    });
+  }
+
+  loadRides(){
+    this.booking.getBookingsByPassengerId(this.id).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.passengerRides = this.sortByDateDesc(response);
+      },
+      error: (err) => console.error(err)
+    });
+
+    if(this.role === 'DRIVER'){
+      this.booking.getBookingsByDriverId(this.id).subscribe({
+        next: (response) => {
+          console.log(response);
+          this.driverRides = this.sortDriverRides(response);
+          this.loadingRides = false;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error(err);
+          this.loadingRides = false;
+        }
+      });
+    }else
+      this.loadingRides = false;
+      this.cdr.detectChanges();
+  }
+
+  sortByDateDesc(rides: any[]) {
+    return rides.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  sortDriverRides(rides: any[]){
+    const statusPriority = { NEW: 0, ACCEPTED: 1, DECLINED: 1};
+
+    return rides.sort((a, b) => {
+      const aStat = a.status === 'NEW' ? 0 : 1;
+      const bStat = b.status === 'NEW' ? 0 : 1;
+      const statusDiff = aStat - bStat;
+
+      if(statusDiff !== 0)
+        return statusDiff;
+
+      return(new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    });
+  }
+
+  acceptRide(rideId: number){
+    this.booking.updateBookingStatus(rideId, true);
+  }
+
+  declineRide(rideId: number){
+    this.booking.updateBookingStatus(rideId, false);
+  }
+
+}

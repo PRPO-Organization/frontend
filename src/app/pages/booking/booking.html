@@ -79,5 +79,13 @@
     </button>
   </div>
 
+
+  <!-- leaflet in case of blocked geolocation -->
+  @if(showMapPicker){
+  <h2>Select pickup location</h2>
+  <div *ngIf="showMapPicker" id="map" style="height: 300px; margin-top: 10px;"></div>
+  }
+
+
 </div>
 
