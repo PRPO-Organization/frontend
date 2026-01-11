@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: prporegistry.azurecr.io/frontend:latest
+          image: prporegistry.azurecr.io/frontend:16db88d567fe6ea580080da44c9808da1aa9baa7
           imagePullPolicy: Always
           ports:
             - containerPort: 80
