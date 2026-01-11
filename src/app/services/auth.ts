@@ -71,4 +71,9 @@ export class Auth {
     const headers = this.getAuthHeaders();
     return this.http.put<string>(`${environment.USERS_URL}/users/me`, body, { headers });
   }
+
+  getUserInfo(userId: number): Observable<any>{
+    const headers = this.getAuthHeaders();
+    return this.http.get<any>(`${environment.USERS_URL}/users/${userId}`, { headers });
+  }
 }

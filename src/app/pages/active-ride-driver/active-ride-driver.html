@@ -1,0 +1,39 @@
+<div class="container my-4" *ngIf="!loading; else loadingTpl">
+
+  <h2 class="mb-3">Active Ride</h2>
+
+  <div class="card mb-3 shadow-sm">
+    <div class="card-body">
+
+      <p><strong>Passenger:</strong> {{ ride.passengerId }}</p>
+      <p><strong>Pickup:</strong> {{ ride.pickupLat }}, {{ ride.pickupLng }}</p>
+      <p><strong>Dropoff:</strong> {{ ride.dropoffLat }}, {{ ride.dropoffLng }}</p>
+
+      <p *ngIf="distanceKm !== null">
+        <strong>Distance to destination:</strong>
+        {{ distanceKm | number : '1.2-2' }} km
+      </p>
+
+    </div>
+  </div>
+
+  <div id="driver-map" class="mb-3" style="height: 400px;"></div>
+
+  <div class="d-grid gap-2">
+    <button
+      class="btn btn-danger"
+      (click)="completeRide()"
+      [disabled]="completing"
+    >
+      {{ completing ? 'Completing...' : 'Complete Ride' }}
+    </button>
+  </div>
+
+</div>
+
+<ng-template #loadingTpl>
+  <div class="text-center my-5">
+    <div class="spinner-border"></div>
+    <p class="mt-2">Loading active ride…</p>
+  </div>
+</ng-template>

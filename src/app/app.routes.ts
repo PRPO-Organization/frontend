@@ -8,6 +8,7 @@ import { LeafletMapComponent } from './leaflet-map/leaflet-map';
 import { Booking } from './pages/booking/booking';
 import { Profile } from './pages/profile/profile';
 import { MyRides } from './pages/my-rides/my-rides';
+import { ActiveRideDriver } from './pages/active-ride-driver/active-ride-driver';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -19,5 +20,6 @@ export const routes: Routes = [
   { path: 'map', component: LeafletMapComponent },
   { path: 'booking', component: Booking },
   { path: 'profile', component: Profile },
-  { path: 'my-rides', component: MyRides }
+  { path: 'my-rides', component: MyRides },
+  { path: 'active-rides', component: ActiveRideDriver }
 ];
