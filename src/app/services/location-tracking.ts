@@ -32,9 +32,12 @@ export class LocationTracking {
       isDriver = true;
 
     this.sub = this.geolocation$.subscribe(position => {
-      if(!position)
+      console.log("tracking check 4");
+      if(!position){
+        console.log("No position received. Ending tracking.")
         return;
-
+      }
+        
       const { latitude, longitude, accuracy } = position.coords;
 
       //backend call every 5 seconds
@@ -43,7 +46,12 @@ export class LocationTracking {
         return;
 
       this.lastSent = now;
-      this.sendLocation(userId, latitude, longitude, isDriver);
+      this.sendLocation(userId, latitude, longitude, isDriver).subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        error: (err) => console.error(err)
+      });
     });
   }
 
@@ -52,13 +60,17 @@ export class LocationTracking {
     this.sub = undefined;
   }
 
-  private sendLocation(userId: number, lat: number, lng: number, isDriver: boolean){
+  sendLocation(userId: number, lat: number, lng: number, isDriver: boolean): Observable<any>{
     const body = { lat, lng, isDriver };
-    this.http.post(`${this.API_URL}/${userId}`, body);
+    return this.http.post<any>(`${this.API_URL}/${userId}`, body);
   }
 
-  getNearestDrivers(lat: number, lng: number, driverCount: number): Observable<any[]>{
+  getNearestDrivers(lat: number, lng: number, passengerId: number): Observable<any[]>{
     const body = {lat, lng, isDriver: true};
-    return this.http.post<any[]>(`${this.API_URL}/nearest/${driverCount}`, body);
+    return this.http.post<any[]>(`${this.API_URL}/nearest/${passengerId}`, body);
+  }
+
+  getUserLocation(id: number): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/${id}`);
   }
 }

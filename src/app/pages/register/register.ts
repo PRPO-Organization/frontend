@@ -3,6 +3,7 @@ import { Auth } from '../../services/auth';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { LocationTracking } from '../../services/location-tracking';
 
 @Component({
   selector: 'app-register',
@@ -22,7 +23,9 @@ export class Register {
   isDriver: boolean = false;
   loading: boolean = false;
 
-  constructor(private auth: Auth, private router: Router) {}
+  manualLocationRequired: boolean = false;
+
+  constructor(private auth: Auth, private router: Router, private tracking: LocationTracking) {}
 
   onRegister() {
     if(this.password !== this.passwordC){

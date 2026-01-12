@@ -7,7 +7,8 @@
 <!-- passenger rides -->
 <h3>Passenger Requests</h3>
 
-<div *ngFor="let ride of passengerRides" class="ride-card">
+@for(ride of passengerRides; track ride){
+<div class="ride-card">
   <div>
     <b>Status:</b> {{ ride.status }}
   </div>
@@ -15,13 +16,15 @@
     <b>Date:</b> {{ ride.createdAt | date:'short' }}
   </div>
 </div>
+}
 
 <!-- driver rides -->
 @if(role === 'DRIVER'){
 <div>
   <h3>Driver Requests</h3>
 
-  <div *ngFor="let ride of driverRides" class="ride-card">
+  @for(ride of driverRides; track ride){
+  <div class="ride-card">
     <div>
       <b>Status:</b> {{ ride.status }}
     </div>
@@ -36,5 +39,6 @@
     </div>
     }
   </div>
+  }
 </div>
 }

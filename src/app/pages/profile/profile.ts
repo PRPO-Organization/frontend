@@ -41,6 +41,7 @@ export class Profile implements OnInit {
         this.lastName = response.lastName;
         this.role = response.role;
         this.email = response.email;
+        this.address = response.address;
         this.loading = false;
         this.cdr.detectChanges();
       },

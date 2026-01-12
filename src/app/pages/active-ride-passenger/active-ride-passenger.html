@@ -1,0 +1,34 @@
+<div class="container my-4" *ngIf="ride; else noRide">
+
+  <h2 class="mb-4">Active Ride Details</h2>
+
+  <div class="card shadow-sm mb-3 p-3">
+    <p><strong>Driver:</strong> {{ ride.driverName || ride.driverId }}</p>
+    <p><strong>Status:</strong> {{ ride.status }}</p>
+    <p><strong>Pickup:</strong> {{ ride.pickupLat }}, {{ ride.pickupLng }}</p>
+    <p><strong>Dropoff:</strong> {{ ride.dropoffLat }}, {{ ride.dropoffLng }}</p>
+    <p><strong>Requested At:</strong> {{ ride.createdAt | date:'medium' }}</p>
+  </div>
+
+  <div *ngIf="ride.status === 'COMPLETED'">
+    <h4>Rate your driver</h4>
+    <div class="d-flex align-items-center">
+      <ng-container *ngFor="let star of [1,2,3,4,5]">
+        <i class="bi" 
+           [ngClass]="driverRating >= star ? 'bi-star-fill text-warning' : 'bi-star'"
+           (click)="driverRating = star"
+           style="cursor:pointer; font-size: 1.5rem;"></i>
+      </ng-container>
+      <button class="btn btn-primary btn-sm ms-3" (click)="submitRating()" [disabled]="driverRating == null">
+        Submit
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #noRide>
+  <div class="text-center my-5 text-muted">
+    <h5>No active rides at the moment</h5>
+  </div>
+</ng-template>
