@@ -5,8 +5,8 @@
   <div class="alert alert-warning">
     Please select a destination on the map first.
   </div>
-  }@else{
-  <div *ngIf="destination">
+  }@else {
+  <div>
     <p><strong>Selected Destination:</strong></p>
     <ul>
       <li>Latitude: {{ destination.lat }}</li>
@@ -35,14 +35,14 @@
       <tr>
         <th></th>
         <th>Name</th>
-        <th>Vehicle</th>
         <th>Rating</th>
         <th>Location</th>
       </tr>
     </thead>
 
     <tbody>
-      <tr *ngFor="let d of drivers"
+      @for(d of drivers; track d){
+      <tr 
           (click)="selectDriver(d)"
           [class.table-primary]="selectedDriver?.id === d.id"
           style="cursor: pointer">
@@ -55,10 +55,10 @@
         </td>
 
         <td>{{ d.firstName }} {{ d.lastName }}</td>
-        <td>{{ d.vehicle }}</td>
         <td>⭐ {{ d.ratings | number : '1.1-1' }}</td>
         <td>{{ d.distanceKm | number : '1.1-2' }} kilometers</td>
       </tr>
+      }
     </tbody>
   </table>
   }
@@ -83,7 +83,7 @@
   <!-- leaflet in case of blocked geolocation -->
   @if(showMapPicker){
   <h2>Select pickup location</h2>
-  <div *ngIf="showMapPicker" id="map" style="height: 300px; margin-top: 10px;"></div>
+  <div id="map" style="height: 300px; margin-top: 10px;"></div>
   }
 
 

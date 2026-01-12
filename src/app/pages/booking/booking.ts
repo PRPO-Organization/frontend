@@ -53,6 +53,14 @@ export class Booking {
       return;
 
     //this.loadDrivers();
+    this.auth.verifySelf().subscribe({
+      next: (response) => {
+        this.userId = response.id;
+      },
+      error: (err) => console.error(err)
+    });
+
+
     this.getUserLocation();
   }
 
@@ -63,7 +71,7 @@ export class Booking {
         this.drivers = response;
         console.log(this.drivers);
         await this.calculateRating();
-        this.getNearestDrivers(this.destination?.lat!, this.destination?.lng!, 5);
+        this.getNearestDrivers(this.destination?.lat!, this.destination?.lng!, this.userId);
         this.loadingDrivers = false;
         this.cdr.detectChanges();
       },
@@ -118,8 +126,8 @@ export class Booking {
     });
   }
 
-  async getNearestDrivers(lat: number, lng: number, driverCount: number){
-    this.tracking.getNearestDrivers(lat, lng, driverCount).subscribe({
+  async getNearestDrivers(lat: number, lng: number, passengerId: number){
+    this.tracking.getNearestDrivers(lat, lng, passengerId).subscribe({
       next: (response) =>{
         this.locationList = response;
         console.log("nearest driver ids:", response);

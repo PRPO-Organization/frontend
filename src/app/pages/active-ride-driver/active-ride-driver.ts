@@ -106,12 +106,12 @@ export class ActiveRideDriver implements OnInit, OnDestroy{
   }
 
   getActiveRides(rides: any[]): any[] {
-  return rides
-    .filter(ride => ride.status === 'NEW')
-    .sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-}
+    return rides
+      .filter(ride => ride.status === 'NEW')
+      .sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+  }
 
   private startLiveTracking() {
     this.geoSub = this.geolocation$.subscribe(position => {

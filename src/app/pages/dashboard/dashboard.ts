@@ -3,6 +3,7 @@ import { Auth } from '../../services/auth';
 import { CommonModule } from '@angular/common';
 import { Notifications } from '../../services/notifications';
 import { Router } from '@angular/router';
+import { LocationTracking } from '../../services/location-tracking';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,9 +16,14 @@ export class Dashboard implements OnInit{
   lastName: string = '';
   email: string = '';
   role: string = '';
+  id: number | null = null;
+
   notifications: Object[] = [];
 
-  constructor(private auth: Auth, private notifs: Notifications, private router: Router) {}
+  manualLocationRequired: boolean = false;
+
+  constructor(private auth: Auth, private notifs: Notifications, private router: Router, 
+    private tracking: LocationTracking) {}
   
   loggedIn$: any;
 
@@ -31,6 +37,9 @@ export class Dashboard implements OnInit{
         this.lastName = response.lastName;
         this.role = response.role;
         this.email = response.email;
+        this.id = response.id;
+
+        this.checkGeolocation();
 
         //this.getNotifications();
       }
@@ -47,5 +56,35 @@ export class Dashboard implements OnInit{
 
   toMyRides(){
     this.router.navigate(['/my-rides']);
+  }
+
+  checkGeolocation() {
+    this.tracking.getUserLocation(this.id!).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (err) => {
+        console.log("Assigning manual location in Ljubljana");
+        this.tracking.sendLocation(this.id!, 46.0569, 14.5058, this.role === 'DRIVER' ? true : false)
+          .subscribe({
+            next: (response) => {
+              console.log(response)
+            }
+          });
+      }
+    })
+
+    if(!('geolocation' in navigator)){
+      this.manualLocationRequired = true;
+      return;
+    }
+
+    navigator.permissions.query({ name: 'geolocation' as PermissionName})
+      .then(permission => {
+        if(permission.state === 'denied'){
+          this.manualLocationRequired = true;
+          return;
+        }
+      });
   }
 }
