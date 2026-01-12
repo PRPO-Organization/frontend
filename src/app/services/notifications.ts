@@ -20,6 +20,11 @@ export class Notifications {
   private notificationsSubject = new BehaviorSubject<Notification[]>([]);
   notifications$ = this.notificationsSubject.asObservable();
 
+  private eventSource?: EventSource;
+  private reconnectTimer?: any;
+  private readonly RECONNECT_DELAY = 3000;
+  private isManuallyClosed = false;
+
   constructor(private http: HttpClient, private auth: Auth) {}
 
   getUnreadAccountNotifications() {
@@ -72,6 +77,7 @@ export class Notifications {
     console.log(n);
   }
 
+  /*
   startSse() {
     const token = this.auth.getToken();
     const eventSource = new EventSource(`${environment.NOTIFS_URL}/notifications/stream?token=${token}`);
@@ -98,4 +104,82 @@ export class Notifications {
       eventSource.close();
     };
   }
+  */
+
+  startSse() {
+    if (this.eventSource) 
+      return;
+
+    this.isManuallyClosed = false;
+
+    const token = this.auth.getToken();
+    if (!token) 
+      return;
+
+    console.log("Starting SSE connection...");
+
+    this.eventSource = new EventSource(
+      `${environment.NOTIFS_URL}/notifications/stream?token=${token}`
+    );
+
+    this.eventSource.addEventListener("notification", (event: any) => {
+      try {
+        const data = JSON.parse(event.data);
+        this.addNotification(data);
+      } catch (e) {
+        console.error("Failed to parse SSE event", e);
+      }
+    });
+
+    this.eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        this.addNotification(data);
+      } catch (e) {
+        console.error("Failed to parse SSE message", e);
+      }
+    };
+
+    this.eventSource.onerror = (err) => {
+      console.error("SSE error:", err);
+      this.cleanupSse();
+
+      if (!this.isManuallyClosed) {
+        this.scheduleReconnect();
+      }
+    };
+  }
+
+  private cleanupSse() {
+    if (this.eventSource) {
+      console.log("Closing SSE connection");
+      this.eventSource.close();
+      this.eventSource = undefined;
+    }
+  }
+
+  private scheduleReconnect() {
+    if (this.reconnectTimer) 
+      return;
+
+    console.log("Scheduling SSE reconnect...");
+
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = undefined;
+      this.startSse();
+    }, this.RECONNECT_DELAY);
+  }
+
+  stopSse() {
+    this.isManuallyClosed = true;
+
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = undefined;
+    }
+
+    this.cleanupSse();
+  }
+
+
 }
