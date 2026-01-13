@@ -51,6 +51,7 @@ export class MyRides implements OnInit {
       next: (response) => {
         console.log(response);
         this.passengerRides = this.sortByDateDesc(response);
+        this.cdr.detectChanges();
       },
       error: (err) => console.error(err)
     });
