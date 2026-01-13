@@ -119,12 +119,32 @@ export class MyRides implements OnInit {
     });
   }
 
-  acceptRide(rideId: number){
-    this.booking.updateBookingStatus(rideId, true);
+  acceptRide(ride: any){
+    this.booking.updateBookingStatus(ride.requestId, true).subscribe({
+      next: (response) => {
+        console.log(response)
+      },
+      error: (err) => console.error(err)
+    });
+
+    this.rides.createNewRide(ride.passengerId, ride.driverId, { lat: ride.pickupLat, lng: ride.pickupLng }, 
+      { lat: ride.dropoffLat, lng: ride.dropoffLng }).subscribe({
+        next: (response) => {
+          console.log(response);
+
+          setTimeout(() => {
+            this.router.navigate(['/active-rides']);
+          }, 4000);
+        },
+        error: (err) => console.error(err)
+      });
   }
 
   declineRide(rideId: number){
-    this.booking.updateBookingStatus(rideId, false);
+    this.booking.updateBookingStatus(rideId, false).subscribe({
+      next: (response) => console.log(response),
+      error: (err) => console.error(err)
+    });
   }
 
   rateDriver(driverId: number, rideId: number) {

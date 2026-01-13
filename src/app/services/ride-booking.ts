@@ -49,9 +49,9 @@ export class RideBooking {
     return this.http.get<any>(`${this.API_URL}/requests/${bookingId}`);
   }
 
-  updateBookingStatus(bookingId: number, accepted: boolean){
+  updateBookingStatus(bookingId: number, accepted: boolean): Observable<any>{
     const status = accepted ? 'ACCEPTED' : 'DECLINED';
-    this.http.patch(`${this.API_URL}/requests/${bookingId}/status?status=${status}`, null);
+    return this.http.patch<any>(`${this.API_URL}/requests/${bookingId}/status?status=${status}`, null);
   }
 
   getDrivers(): Observable<any[]>{
