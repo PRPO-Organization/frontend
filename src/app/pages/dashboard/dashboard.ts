@@ -58,6 +58,14 @@ export class Dashboard implements OnInit{
     this.router.navigate(['/my-rides']);
   }
 
+  toLogin(){
+    this.router.navigate(['/login']);
+  }
+
+  toRegister(){
+    this.router.navigate(['/register'])
+  }
+
   checkGeolocation() {
     this.tracking.getUserLocation(this.id!).subscribe({
       next: (response) => {

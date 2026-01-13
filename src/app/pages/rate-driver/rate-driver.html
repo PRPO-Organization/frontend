@@ -1,0 +1,48 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+
+  <div class="card shadow-lg p-4" style="max-width: 450px; width: 100%;">
+    <h3 class="text-center mb-4">Rate Your Driver</h3>
+
+    <div class="mb-3 text-center">
+      <label class="form-label fw-bold">Rating</label>
+      <div class="d-flex justify-content-center gap-2">
+        @for (star of [1,2,3,4,5]; track star) {
+          <button
+            type="button"
+            class="btn"
+            [class.btn-warning]="rating >= star"
+            [class.btn-outline-secondary]="rating < star"
+            (click)="rating = star">
+            ⭐
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Comment (optional)</label>
+      <textarea
+        class="form-control"
+        rows="3"
+        [(ngModel)]="comment"
+        placeholder="Share your experience...">
+      </textarea>
+    </div>
+
+    <button
+      class="btn btn-primary w-100"
+      [disabled]="loading"
+      (click)="submitRating()">
+      Submit Rating
+    </button>
+
+    @if (error) {
+      <div class="alert alert-danger mt-3">{{ error }}</div>
+    }
+
+    @if (success) {
+      <div class="alert alert-success mt-3">{{ success }}</div>
+    }
+  </div>
+
+</div>
