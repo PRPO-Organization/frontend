@@ -20,6 +20,6 @@ export class Ratings {
   rateUser(ratedUserId: number, userRating: number, comment: string): Observable<any>{
     const headers = this.auth.getAuthHeaders();
     const body = { ratedUserId, userRating, comment };
-    return this.http.post<any[]>(`${this.API_URL}/id`, body, { headers });
+    return this.http.post<any[]>(`${this.API_URL}/${ratedUserId}`, body, { headers });
   } 
 }

@@ -1,44 +1,159 @@
-<h2>My Rides</h2>
+<div class="container my-4">
 
-@if(loadingRides){
-<div>Loading rides...</div>
-}
+  <h2 class="mb-4 text-center">My Rides</h2>
 
-<!-- passenger rides -->
-<h3>Passenger Requests</h3>
-
-@for(ride of passengerRides; track ride){
-<div class="ride-card">
-  <div>
-    <b>Status:</b> {{ ride.status }}
-  </div>
-  <div>
-    <b>Date:</b> {{ ride.createdAt | date:'short' }}
-  </div>
-</div>
-}
-
-<!-- driver rides -->
-@if(role === 'DRIVER'){
-<div>
-  <h3>Driver Requests</h3>
-
-  @for(ride of driverRides; track ride){
-  <div class="ride-card">
-    <div>
-      <b>Status:</b> {{ ride.status }}
+  @if (loadingRides) {
+    <div class="text-center my-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <div class="mt-2">Loading rides...</div>
     </div>
-    <div>
-      <b>Date:</b> {{ ride.createdAt | date:'short' }}
-    </div>
-
-    @if(ride.status === 'NEW'){
-    <div class="actions">
-      <button (click)="acceptRide(ride.id)">ACCEPT</button>
-      <button (click)="declineRide(ride.id)">DECLINE</button>
-    </div>
-    }
-  </div>
   }
+
+  <!-- ================= ACTIVE RIDES ================= -->
+
+  <div class="mb-5">
+    <h4 class="mb-3 border-bottom pb-2">Active Passenger Requests</h4>
+
+    <div class="row g-3">
+      @for (ride of passengerRides; track ride) {
+        <div class="col-md-6 col-lg-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <span class="badge bg-warning text-dark mb-2">
+                {{ ride.status }}
+              </span>
+
+              <p class="mb-1"><strong>Date:</strong> {{ ride.createdAt | date:'short' }}</p>
+              <p class="mb-1">
+                <strong>Pickup:</strong> {{ ride.pickupLat }}, {{ ride.pickupLng }}
+              </p>
+              <p class="mb-1">
+                <strong>Dropoff:</strong> {{ ride.dropoffLat }}, {{ ride.dropoffLng }}
+              </p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ================= DRIVER ACTIVE RIDES ================= -->
+
+  @if (role === 'DRIVER') {
+    <div class="mb-5">
+      <h4 class="mb-3 border-bottom pb-2">Active Driver Requests</h4>
+
+      <div class="row g-3">
+        @for (ride of driverRides; track ride) {
+          <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+
+                <span class="badge bg-warning text-dark mb-2">
+                  {{ ride.status }}
+                </span>
+
+                <p class="mb-1"><strong>Date:</strong> {{ ride.createdAt | date:'short' }}</p>
+                <p class="mb-1">
+                  <strong>Pickup:</strong> {{ ride.pickupLat }}, {{ ride.pickupLng }}
+                </p>
+                <p class="mb-1">
+                  <strong>Dropoff:</strong> {{ ride.dropoffLat }}, {{ ride.dropoffLng }}
+                </p>
+
+                @if (ride.status === 'NEW') {
+                  <div class="d-flex gap-2 mt-3">
+                    <button
+                      class="btn btn-sm btn-success w-50"
+                      (click)="acceptRide(ride.id)">
+                      Accept
+                    </button>
+
+                    <button
+                      class="btn btn-sm btn-outline-danger w-50"
+                      (click)="declineRide(ride.id)">
+                      Decline
+                    </button>
+                  </div>
+                }
+
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ================= PREVIOUS RIDES ================= -->
+
+  <div class="mb-5">
+    <h4 class="mb-3 border-bottom pb-2 text-muted">Previous Passenger Rides</h4>
+
+    <div class="row g-3">
+      @for (ride of previousPassengerRides; track ride) {
+        <div class="col-md-6 col-lg-4">
+          <div class="card border-light bg-light h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+
+              <span class="badge bg-secondary mb-2">
+                {{ ride.status }}
+              </span>
+
+              <p class="mb-1"><strong>Date:</strong> {{ ride.createdAt | date:'short' }}</p>
+              <p class="mb-1">
+                <strong>Pickup:</strong> {{ ride.pickupLat }}, {{ ride.pickupLng }}
+              </p>
+              <p class="mb-3">
+                <strong>Dropoff:</strong> {{ ride.dropoffLat }}, {{ ride.dropoffLng }}
+              </p>
+
+              @if (ride.status === 'COMPLETED') {
+                <button
+                  class="btn btn-outline-primary mt-auto"
+                  (click)="rateDriver(ride.driverId, ride.id)">
+                  ⭐ Rate Driver
+                </button>
+              }
+
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+
+  <!-- ================= PREVIOUS DRIVER RIDES ================= -->
+
+  @if (role === 'DRIVER') {
+    <div class="mb-5">
+      <h4 class="mb-3 border-bottom pb-2 text-muted">
+        Previous Driver Rides
+      </h4>
+
+      <div class="row g-3">
+        @for (ride of previousDriverRides; track ride) {
+          <div class="col-md-6 col-lg-4">
+            <div class="card border-light bg-light h-100">
+              <div class="card-body">
+                <span class="badge bg-secondary mb-2">
+                  {{ ride.status }}
+                </span>
+
+                <p class="mb-1"><strong>Date:</strong> {{ ride.createdAt | date:'short' }}</p>
+                <p class="mb-1">
+                  <strong>Pickup:</strong> {{ ride.pickupLat }}, {{ ride.pickupLng }}
+                </p>
+                <p class="mb-1">
+                  <strong>Dropoff:</strong> {{ ride.dropoffLat }}, {{ ride.dropoffLng }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
 </div>
-}
