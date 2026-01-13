@@ -17,9 +17,9 @@ export class Ratings {
     return this.http.get<any[]>(`${this.API_URL}/users/${driverId}/avg`, { headers });
   }
 
-  rateUser(ratedUserId: number, userRating: number, comment: string): Observable<any>{
+  rateUser(userId: number, ratedUserId: number, userRating: number, comment: string): Observable<any>{
     const headers = this.auth.getAuthHeaders();
     const body = { ratedUserId, userRating, comment };
-    return this.http.post<any[]>(`${this.API_URL}/${ratedUserId}`, body, { headers });
+    return this.http.post<any>(`${this.API_URL}/${userId}`, body, { headers, responseType: 'text' as 'json' });
   } 
 }

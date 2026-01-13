@@ -81,7 +81,7 @@ export class ActiveRidePassenger implements OnInit, OnDestroy{
   }
 
   submitRating(){
-    this.rating.rateUser(this.driver.id, this.driverRating, '').subscribe({
+    this.rating.rateUser(this.userId!, this.driver.id, this.driverRating, '').subscribe({
       next: (response) => {
         console.log(response)
       },
